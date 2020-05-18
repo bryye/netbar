@@ -3,6 +3,7 @@ package com.nuo.netbar.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.nuo.netbar.mapper.ChargingMapper;
+import com.nuo.netbar.mapper.MemberMapper;
 import com.nuo.netbar.mapper.SysuserMapper;
 import com.nuo.netbar.pojo.*;
 import com.nuo.netbar.service.ChargingService;
@@ -17,7 +18,7 @@ public class ChargingServiceImpl implements ChargingService {
     @Autowired
     private  ChargingMapper chargingMapper;
     @Autowired
-    private SysuserMapper sysuserMapper;
+    private MemberMapper memberMapper;
     @Override
     public List<Charge> getChargingList() {
         List<Charge> dataList=new ArrayList<>();
@@ -27,12 +28,12 @@ public class ChargingServiceImpl implements ChargingService {
 
         for (Charging charge:list
              ) {
-            Sysuser sysuser=sysuserMapper.selectByPrimaryKey(charge.getuId());
+            Member user=memberMapper.selectByPrimaryKey(charge.getuId());
             Charge data=new Charge();
             data.setChargeId(charge.getId());
             data.setDowntime(charge.getDowntime());
             data.setMoney(charge.getMoney());
-            data.setName(sysuser.getName());
+            data.setName(user.getName());
             data.setNo(charge.getNo());
             data.setStatus(charge.getStatus());
             data.setStarttime(charge.getStarttime());
@@ -52,12 +53,12 @@ public class ChargingServiceImpl implements ChargingService {
     @Override
     public Charge getCharging(Integer id) {
         Charging charge=chargingMapper.selectByPrimaryKey(id);
-        Sysuser sysuser=sysuserMapper.selectByPrimaryKey(charge.getuId());
+        Member user=memberMapper.selectByPrimaryKey(charge.getuId());
         Charge data=new Charge();
         data.setChargeId(charge.getId());
         data.setDowntime(charge.getDowntime());
         data.setMoney(charge.getMoney());
-        data.setName(sysuser.getName());
+        data.setName(user.getName());
         data.setNo(charge.getNo());
         data.setStatus(charge.getStatus());
         data.setStarttime(charge.getStarttime());
@@ -73,5 +74,32 @@ public class ChargingServiceImpl implements ChargingService {
     @Override
     public List<Charging> selectByExample(ChargingExample example) {
         return chargingMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<Charge> getChargingByNo(Integer no) {
+        List<Charge> dataList=new ArrayList<>();
+        ChargingExample chargingExample=new ChargingExample();
+        chargingExample.setDistinct(false);
+        ChargingExample.Criteria criteria=chargingExample.createCriteria();
+        criteria.andNoEqualTo(no);
+        List<Charging>  list= chargingMapper.selectByExample(chargingExample);
+
+        for (Charging charge:list
+        ) {
+            Member user=memberMapper.selectByPrimaryKey(charge.getuId());
+            Charge data=new Charge();
+            data.setChargeId(charge.getId());
+            data.setDowntime(charge.getDowntime());
+            data.setMoney(charge.getMoney());
+            data.setName(user.getName());
+            data.setNo(charge.getNo());
+            data.setStatus(charge.getStatus());
+            data.setStarttime(charge.getStarttime());
+            data.setcId(charge.getcId());
+            dataList.add(data);
+
+        }
+        return  dataList;
     }
 }

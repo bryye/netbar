@@ -14,4 +14,6 @@ public interface ChargingService {
     int updateByPrimaryKeySelective(Charging record);
     List<Charging> selectByExample(ChargingExample example);
 
+    List<Charge> getChargingByNo(Integer no);
+
 }

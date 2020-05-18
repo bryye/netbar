@@ -82,4 +82,14 @@ public class ChargingController {
         chargingService.updateByPrimaryKeySelective(charging);
         return AjaxResult.success("信息修改成功");
     }
+
+
+    @RequestMapping("/select")
+    @ApiOperation("查询")
+    public AjaxResult select(@RequestParam("no")Integer no ,@RequestParam(defaultValue = "1",value = "pageNum") Integer pageNum){
+        PageHelper.startPage(pageNum,10);
+        List list=chargingService.getChargingByNo(no);
+        PageInfo<Charge> pageInfo=new PageInfo<>(list);
+        return AjaxResult.success(pageInfo);
+    }
 }
